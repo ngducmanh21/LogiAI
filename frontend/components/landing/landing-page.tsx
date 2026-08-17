@@ -196,15 +196,15 @@ export function LandingPage() {
           <div aria-hidden className="absolute inset-x-0 top-0 -z-10 h-[32rem] bg-[radial-gradient(ellipse_at_top,_rgba(250,90,30,0.16),_transparent_68%)]" />
           <div className="mx-auto max-w-7xl">
             <div className="mx-auto max-w-4xl text-center">
-              <p className="mx-auto inline-flex items-center gap-2 rounded-full border border-[#fa5a1e]/20 bg-white/80 px-3 py-1.5 text-xs font-semibold tracking-wide text-[#c2410c] shadow-sm">
+              <p className="mx-auto inline-flex items-center gap-2 rounded-full border border-[#fa5a1e]/20 bg-white/80 px-3 py-1.5 text-center text-[11px] font-semibold tracking-wide text-[#c2410c] shadow-sm sm:text-xs">
                 <Sparkles className="size-3.5" aria-hidden />
                 TRA CỨU HS CODE & BIỂU THUẾ XNK BẰNG AI
               </p>
-              <h1 className="mt-7 text-balance text-5xl font-semibold tracking-[-0.065em] text-slate-950 sm:text-6xl lg:text-7xl">
+              <h1 className="mt-7 text-balance text-4xl font-semibold tracking-[-0.065em] text-slate-950 sm:text-6xl lg:text-7xl">
                 Từ mô tả hàng hóa
                 <span className="block text-[#fa5a1e]">đến mã HS trong vài giây.</span>
               </h1>
-              <p className="mx-auto mt-7 max-w-2xl text-pretty text-lg leading-8 text-slate-600 sm:text-xl">
+              <p className="mx-auto mt-7 max-w-2xl text-pretty text-base leading-7 text-slate-600 sm:text-xl sm:leading-8">
                 LogiAI dùng Multi-Agent RAG trên hơn 12.000 mã HS của Biểu thuế XNK 2026 và Chú giải HS 2022 để phân loại hàng hóa, tra thuế MFN, VAT và ưu đãi FTA — kèm căn cứ rõ ràng.
               </p>
               <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
@@ -366,7 +366,7 @@ export function LandingPage() {
         </section>
 
         <section id="agents" className="scroll-mt-20 px-5 py-20 sm:px-7 lg:px-10 lg:py-28">
-          <div className="mx-auto grid max-w-7xl gap-12 rounded-[2rem] bg-slate-950 px-6 py-10 text-white sm:px-10 lg:grid-cols-[0.9fr_1.1fr] lg:px-14 lg:py-14">
+          <div className="mx-auto grid max-w-7xl gap-8 rounded-[2rem] bg-slate-950 px-5 py-8 text-white sm:gap-12 sm:px-10 sm:py-10 lg:grid-cols-[0.9fr_1.1fr] lg:px-14 lg:py-14">
             <div>
               <p className="text-xs font-bold tracking-[0.16em] text-[#ff8c5f] uppercase">Kiến trúc Multi-Agent RAG</p>
               <h2 className="mt-5 text-balance text-3xl font-semibold tracking-[-0.045em] sm:text-4xl">

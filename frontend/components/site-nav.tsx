@@ -13,7 +13,7 @@ const NAV = [
 export function SiteNav() {
   const pathname = usePathname();
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1.5 sm:gap-2">
       {NAV.map(({ href, label, Icon }) => {
         const active = pathname === href;
         return (
@@ -22,21 +22,22 @@ export function SiteNav() {
             href={href}
             className={
               active
-                ? "inline-flex items-center gap-1.5 rounded-full bg-[#fa5a1e] px-3.5 py-1.5 text-sm font-semibold text-white"
-                : "inline-flex items-center gap-1.5 rounded-full border border-[#fa5a1e]/30 bg-white px-3.5 py-1.5 text-sm font-medium text-[#c2410c] transition hover:border-[#fa5a1e]/60"
+                ? "inline-flex items-center gap-1.5 rounded-full bg-[#fa5a1e] px-2.5 py-2 text-sm font-semibold text-white sm:px-3.5 sm:py-1.5"
+                : "inline-flex items-center gap-1.5 rounded-full border border-[#fa5a1e]/30 bg-white px-2.5 py-2 text-sm font-medium text-[#c2410c] transition hover:border-[#fa5a1e]/60 sm:px-3.5 sm:py-1.5"
             }
           >
-            <Icon className="size-3.5" aria-hidden />
+            <Icon className="size-4 sm:size-3.5" aria-hidden />
             <span className="hidden sm:inline">{label}</span>
           </Link>
         );
       })}
       <Link
         href="/"
-        className="inline-flex items-center gap-1.5 rounded-full border border-slate-300 bg-white px-3.5 py-1.5 text-sm font-medium text-slate-700 transition hover:border-slate-400"
+        className="inline-flex items-center gap-1.5 rounded-full border border-slate-300 bg-white px-2.5 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-400 sm:px-3.5 sm:py-1.5"
+        aria-label="Trang chủ"
       >
         <span className="hidden sm:inline">Trang chủ</span>
-        <ArrowUpRight className="size-3.5" aria-hidden />
+        <ArrowUpRight className="size-4 sm:size-3.5" aria-hidden />
       </Link>
     </div>
   );

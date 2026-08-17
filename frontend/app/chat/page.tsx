@@ -113,15 +113,15 @@ export default function ChatPage() {
   return (
     <div className="flex min-h-screen flex-col bg-[#faf9f6] text-slate-950">
       <header className="sticky top-0 z-20 border-b border-slate-200/80 bg-[#faf9f6]/90 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-4xl items-center justify-between px-5">
+        <div className="mx-auto flex h-16 max-w-4xl items-center justify-between gap-3 px-4 sm:px-5">
           <LogiLogo />
           <SiteNav />
         </div>
       </header>
 
-      <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-5">
+      <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-4 sm:px-5">
         {messages.length === 0 ? (
-          <div className="flex flex-1 flex-col items-center justify-center py-16 text-center">
+          <div className="flex flex-1 flex-col items-center justify-center py-10 text-center sm:py-16">
             <p className="inline-flex items-center gap-2 rounded-full border border-[#fa5a1e]/20 bg-white px-3 py-1.5 text-xs font-semibold tracking-wide text-[#c2410c]">
               <Sparkles className="size-3.5" aria-hidden />
               TRA CỨU MÃ HS & BIỂU THUẾ XNK
@@ -177,14 +177,14 @@ export default function ChatPage() {
         )}
       </main>
 
-      <div className="sticky bottom-0 border-t border-slate-200/80 bg-[#faf9f6]/95 px-5 py-4 backdrop-blur-xl">
+      <div className="sticky bottom-0 border-t border-slate-200/80 bg-[#faf9f6]/95 px-4 py-3 backdrop-blur-xl sm:px-5 sm:py-4">
         <form onSubmit={onSubmit} className="mx-auto flex max-w-4xl items-center gap-2">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ví dụ: vải dệt thoi 100% polyester đã nhuộm… hoặc 5407.52.00"
-            className="flex-1 rounded-full border border-slate-300 bg-white px-5 py-3 text-sm outline-none transition focus:border-[#fa5a1e]"
+            className="min-w-0 flex-1 rounded-full border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-[#fa5a1e] sm:px-5"
           />
           <button
             type="submit"
