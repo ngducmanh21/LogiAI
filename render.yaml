@@ -1,0 +1,47 @@
+# Render Blueprint — deploy LogiAI (backend FastAPI + frontend Next.js)
+# Docs: https://render.com/docs/blueprint-spec
+services:
+  # ---------- Backend (FastAPI) ----------
+  - type: web
+    name: logiai-backend
+    runtime: python
+    plan: free
+    rootDir: .
+    # data/index/ bị gitignore nên phải build lại embeddings khi deploy
+    # (cần OPENAI_API_KEY — set trong dashboard, sync: false)
+    buildCommand: pip install -r requirements.txt && python scripts/build_index.py
+    startCommand: uvicorn index:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /v1/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.4
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_MODEL
+        value: gpt-4o-mini
+      - key: OPENAI_EMBEDDING_MODEL
+        value: text-embedding-3-small
+
+  # ---------- Frontend (Next.js) ----------
+  - type: web
+    name: logiai-frontend
+    runtime: node
+    plan: free
+    rootDir: frontend
+    buildCommand: corepack enable && corepack prepare pnpm@latest --activate && pnpm install --frozen-lockfile && pnpm build
+    startCommand: pnpm exec next start -p $PORT
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      # URL public của backend — browser gọi trực tiếp
+      - key: NEXT_PUBLIC_LOGIAI_API_URL
+        fromService:
+          type: web
+          name: logiai-backend
+          envVarKey: RENDER_EXTERNAL_URL
+      # URL backend cho Next.js rewrites (server-side)
+      - key: SOATAI_API_URL
+        fromService:
+          type: web
+          name: logiai-backend
+          envVarKey: RENDER_EXTERNAL_URL
