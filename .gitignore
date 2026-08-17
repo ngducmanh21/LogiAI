@@ -16,8 +16,6 @@ node_modules/
 tsconfig.tsbuildinfo
 *.log
 
-# Build artifacts / indexes (rebuild via scripts/build_index.py)
-data/index/
 
 # OS
 .DS_Store

@@ -7,9 +7,8 @@ services:
     runtime: python
     plan: free
     rootDir: .
-    # data/index/ bị gitignore nên phải build lại embeddings khi deploy
-    # (cần OPENAI_API_KEY — set trong dashboard, sync: false)
-    buildCommand: pip install -r requirements.txt && python scripts/build_index.py
+    # data/index/ đã commit sẵn trong repo — không cần rebuild khi deploy
+    buildCommand: pip install -r requirements.txt
     startCommand: uvicorn index:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /v1/health
     envVars:
