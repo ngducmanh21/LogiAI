@@ -15,6 +15,17 @@ from . import agents, config, legal_ingest
 from .store import Store
 
 app = FastAPI(title="LogiAI API", version="0.1.0")
+
+
+@app.middleware("http")
+async def _strip_proxy_prefix(request, call_next):
+    # Vercel rewrite forwards the full path /api/backend/v1/... — strip the prefix.
+    path = request.scope.get("path", "")
+    if path.startswith("/api/backend"):
+        request.scope["path"] = path[len("/api/backend"):] or "/"
+    return await call_next(request)
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

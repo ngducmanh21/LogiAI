@@ -13,7 +13,10 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
-export const API_BASE = (process.env.NEXT_PUBLIC_LOGIAI_API_URL || "http://127.0.0.1:8000").replace(/\/$/, "");
+export const API_BASE = (
+  process.env.NEXT_PUBLIC_LOGIAI_API_URL ||
+  (process.env.NODE_ENV === "production" ? "/api/backend" : "http://127.0.0.1:8000")
+).replace(/\/$/, "");
 
 // ---------------------------------------------------------------- Types (spec 03)
 
