@@ -27,11 +27,11 @@ services:
     runtime: node
     plan: free
     rootDir: frontend
-    buildCommand: corepack enable && corepack prepare pnpm@latest --activate && pnpm install --frozen-lockfile && pnpm build
+    buildCommand: corepack enable && corepack prepare pnpm@11.14.0 --activate && pnpm install --frozen-lockfile && pnpm build
     startCommand: pnpm exec next start -p $PORT
     envVars:
       - key: NODE_VERSION
-        value: "20"
+        value: "22"
       # URL public của backend — browser gọi trực tiếp
       - key: NEXT_PUBLIC_LOGIAI_API_URL
         fromService:
