@@ -76,18 +76,22 @@ class Store:
     def __init__(self):
         # Records theo mã HS (bao gồm mọi level) + map tra cứu nhanh
         self.records: list[dict] = []
-        with open(config.DATA_CLEAN / "hs_codes.jsonl", encoding="utf-8") as f:
-            for line in f:
-                self.records.append(json.loads(line))
+        hs_path = config.DATA_CLEAN / "hs_codes.jsonl"
+        if hs_path.exists():
+            with open(hs_path, encoding="utf-8") as f:
+                for line in f:
+                    self.records.append(json.loads(line))
         self.by_code: dict[str, dict] = {}
         for r in self.records:
             self.by_code.setdefault(r["hs_code"], r)
 
         # Notes chương/phần
         self.notes: list[dict] = []
-        with open(config.DATA_CLEAN / "hs_notes.jsonl", encoding="utf-8") as f:
-            for line in f:
-                self.notes.append(json.loads(line))
+        notes_path = config.DATA_CLEAN / "hs_notes.jsonl"
+        if notes_path.exists():
+            with open(notes_path, encoding="utf-8") as f:
+                for line in f:
+                    self.notes.append(json.loads(line))
         self.chapter_notes = {n["chapter_code"]: n for n in self.notes
                               if n["note_for"] == "chapter" and n.get("chapter_code")}
         self.section_notes = {n["section_code"]: n for n in self.notes

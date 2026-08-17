@@ -251,5 +251,7 @@ async def legal_upload(file: UploadFile = File(...)):
     }
 
 
-# Frontend tĩnh
-app.mount("/", StaticFiles(directory=str(config.ROOT / "frontend"), html=True), name="frontend")
+# Frontend tĩnh (chỉ mount khi tồn tại — trên Vercel, frontend là service riêng)
+_frontend_dir = config.ROOT / "frontend"
+if _frontend_dir.is_dir():
+    app.mount("/", StaticFiles(directory=str(_frontend_dir), html=True), name="frontend")

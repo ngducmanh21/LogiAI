@@ -1,0 +1,6 @@
+# Raw data nặng — backend chỉ cần data/clean/*.jsonl
+data/BieuthueXNK/
+data/Law/
+data/clean/hs_codes.csv
+docs/
+scripts/
