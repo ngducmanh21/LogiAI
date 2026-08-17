@@ -1,0 +1,96 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-background: #FAF9F6;
+  --color-foreground: #0F172A;
+  --color-card: #FFFFFF;
+  --color-card-foreground: #0F172A;
+  --color-popover: #FFFFFF;
+  --color-popover-foreground: #0F172A;
+  --color-primary: #FA5A1E;
+  --color-primary-foreground: #FFFFFF;
+  --color-secondary: #FFF7ED;
+  --color-secondary-foreground: #9A3412;
+  --color-muted: #F1F5F9;
+  --color-muted-foreground: #475569;
+  --color-accent: #FFF1EB;
+  --color-accent-foreground: #C2410C;
+  --color-destructive: #EF4444;
+  --color-border: #E2E8F0;
+  --color-brand: #FA5A1E;
+  --color-brand-strong: #C2410C;
+  --color-brand-soft: #FFF3EB;
+  --color-brand-foreground: #FFFFFF;
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+:root {
+  color-scheme: light;
+}
+
+:root.dark {
+  color-scheme: dark;
+  --color-background: #090D16;
+  --color-foreground: #F8FAFC;
+  --color-card: #111827;
+  --color-card-foreground: #F8FAFC;
+  --color-popover: #111827;
+  --color-popover-foreground: #F8FAFC;
+  --color-primary: #FA5A1E;
+  --color-primary-foreground: #FFFFFF;
+  --color-secondary: #271A12;
+  --color-secondary-foreground: #FED7AA;
+  --color-muted: #1E293B;
+  --color-muted-foreground: #94A3B8;
+  --color-accent: #2C1810;
+  --color-accent-foreground: #FB923C;
+  --color-border: #26334D;
+  --color-brand: #FA5A1E;
+  --color-brand-strong: #FB7239;
+  --color-brand-soft: #2C1810;
+}
+
+* { border-color: var(--color-border); }
+html { background: var(--color-background); }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+button, textarea { font: inherit; }
+:focus-visible:not(textarea) { outline: 2px solid var(--color-brand); outline-offset: 2px; }
+.brand-primary {
+  background-color: var(--color-primary);
+  color: var(--color-primary-foreground);
+  transition: background-color 0.15s ease-in-out;
+}
+.brand-primary:hover {
+  background-color: var(--color-brand-strong);
+}
+
+.scrollbar-thin { scrollbar-width: thin; scrollbar-color: color-mix(in oklab, var(--color-foreground) 20%, transparent) transparent; }
+.scrollbar-thin::-webkit-scrollbar { width: 8px; }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: color-mix(in oklab, var(--color-foreground) 20%, transparent); border: 2px solid transparent; border-radius: 999px; background-clip: padding-box; }
+
+/* ====== Clean, calm typography & indicators ====== */
+.shimmer-text {
+  color: var(--color-foreground);
+}
+
+.glow-breathe {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.thought-in {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}
+

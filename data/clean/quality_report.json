@@ -1,0 +1,19 @@
+{
+  "source_file": "BIEU THUE XNK 2026.04.05.xlsx",
+  "sheet": "BT2026",
+  "total_records": 15119,
+  "by_level": {
+    "4": 1081,
+    "8": 12000,
+    "6": 2034,
+    "7": 4
+  },
+  "leaf_8digit": 12000,
+  "notes_chunks": 176,
+  "chapters_found": 97,
+  "issues": [],
+  "warnings": [
+    "2 HS codes with unusual length (source typos, kept as-is): ['9849170', '9849190']"
+  ],
+  "passed": true
+}
