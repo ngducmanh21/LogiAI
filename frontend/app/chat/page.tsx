@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { Search, Send, Sparkles } from "lucide-react";
+import { History, Plus, Search, Send, Sparkles, Trash2, X } from "lucide-react";
 import { LogiLogo } from "@/components/logi-logo";
 import { SiteNav } from "@/components/site-nav";
 import { API_BASE, ApiResponse, AssistantMessage } from "@/components/hs/results";
@@ -10,6 +10,33 @@ import { AgentEvent, AgentFlow } from "@/components/hs/agent-flow";
 type ChatMessage =
   | { role: "user"; text: string }
   | { role: "assistant"; response: ApiResponse; flow?: AgentEvent[] };
+
+type ChatSession = {
+  id: string;
+  title: string;
+  updatedAt: number;
+  messages: ChatMessage[];
+};
+
+const SESSIONS_KEY = "logiai_sessions";
+const MAX_SESSIONS = 20;
+
+function loadSessions(): ChatSession[] {
+  try {
+    const raw = localStorage.getItem(SESSIONS_KEY);
+    return raw ? (JSON.parse(raw) as ChatSession[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveSessions(sessions: ChatSession[]) {
+  try {
+    localStorage.setItem(SESSIONS_KEY, JSON.stringify(sessions.slice(0, MAX_SESSIONS)));
+  } catch {
+    // localStorage đầy hoặc bị chặn — bỏ qua
+  }
+}
 
 const EXAMPLES = [
   "Vải dệt thoi 100% polyester đã nhuộm, định lượng 120g/m2",
@@ -23,7 +50,64 @@ export default function ChatPage() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [liveEvents, setLiveEvents] = useState<AgentEvent[] | null>(null);
+  const [sessions, setSessions] = useState<ChatSession[]>([]);
+  const [sessionId, setSessionId] = useState<string>("");
+  const [showHistory, setShowHistory] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  // Khôi phục session gần nhất khi mở trang
+  useEffect(() => {
+    const stored = loadSessions();
+    setSessions(stored);
+    if (stored.length > 0) {
+      setSessionId(stored[0].id);
+      setMessages(stored[0].messages);
+    } else {
+      setSessionId(crypto.randomUUID());
+    }
+  }, []);
+
+  // Tự động lưu mỗi khi messages thay đổi
+  useEffect(() => {
+    if (!sessionId || messages.length === 0) return;
+    setSessions((prev) => {
+      const firstUser = messages.find((m) => m.role === "user");
+      const title =
+        firstUser && firstUser.role === "user"
+          ? firstUser.text.slice(0, 60)
+          : "Cuộc trò chuyện mới";
+      const session: ChatSession = { id: sessionId, title, updatedAt: Date.now(), messages };
+      const next = [session, ...prev.filter((s) => s.id !== sessionId)];
+      saveSessions(next);
+      return next;
+    });
+  }, [messages, sessionId]);
+
+  function newSession() {
+    setSessionId(crypto.randomUUID());
+    setMessages([]);
+    setShowHistory(false);
+  }
+
+  function openSession(id: string) {
+    const s = sessions.find((x) => x.id === id);
+    if (!s) return;
+    setSessionId(s.id);
+    setMessages(s.messages);
+    setShowHistory(false);
+  }
+
+  function deleteSession(id: string) {
+    setSessions((prev) => {
+      const next = prev.filter((s) => s.id !== id);
+      saveSessions(next);
+      return next;
+    });
+    if (id === sessionId) {
+      setSessionId(crypto.randomUUID());
+      setMessages([]);
+    }
+  }
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -115,8 +199,77 @@ export default function ChatPage() {
       <header className="sticky top-0 z-20 border-b border-slate-200/80 bg-[#faf9f6]/90 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-4xl items-center justify-between gap-3 px-4 sm:px-5">
           <LogiLogo />
-          <SiteNav />
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setShowHistory((v) => !v)}
+              className="inline-flex items-center gap-1.5 rounded-full border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-[#fa5a1e]/40"
+              aria-label="Lịch sử phiên"
+            >
+              <History className="size-3.5" aria-hidden />
+              Lịch sử
+            </button>
+            <button
+              type="button"
+              onClick={newSession}
+              className="inline-flex items-center gap-1.5 rounded-full border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-[#fa5a1e]/40"
+              aria-label="Phiên mới"
+            >
+              <Plus className="size-3.5" aria-hidden />
+              Phiên mới
+            </button>
+            <SiteNav />
+          </div>
         </div>
+        {showHistory && (
+          <div className="mx-auto max-w-4xl px-4 pb-3 sm:px-5">
+            <div className="rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
+              <div className="flex items-center justify-between px-2 py-1">
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  Phiên đã lưu ({sessions.length})
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setShowHistory(false)}
+                  className="rounded-full p-1 text-slate-400 hover:text-slate-700"
+                  aria-label="Đóng"
+                >
+                  <X className="size-3.5" aria-hidden />
+                </button>
+              </div>
+              {sessions.length === 0 ? (
+                <p className="px-2 py-3 text-sm text-slate-500">Chưa có phiên nào được lưu.</p>
+              ) : (
+                <ul className="max-h-64 overflow-y-auto">
+                  {sessions.map((s) => (
+                    <li key={s.id} className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => openSession(s.id)}
+                        className={`min-w-0 flex-1 rounded-xl px-2 py-2 text-left text-sm transition hover:bg-slate-50 ${
+                          s.id === sessionId ? "bg-orange-50 text-[#c2410c]" : "text-slate-700"
+                        }`}
+                      >
+                        <span className="block truncate">{s.title}</span>
+                        <span className="block text-xs text-slate-400">
+                          {new Date(s.updatedAt).toLocaleString("vi-VN")}
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => deleteSession(s.id)}
+                        className="rounded-full p-1.5 text-slate-400 transition hover:text-red-600"
+                        aria-label="Xoá phiên"
+                      >
+                        <Trash2 className="size-3.5" aria-hidden />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        )}
       </header>
 
       <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-4 sm:px-5">
