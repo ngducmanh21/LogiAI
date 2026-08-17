@@ -4,6 +4,7 @@ Index đặt tại data/index/ (tạo bởi scripts/build_index.py).
 Dev-mode dùng in-process store thay cho Qdrant/Elasticsearch (spec 01) —
 interface giữ nguyên nên có thể swap backend sau.
 """
+import gzip
 import json
 import math
 import re
@@ -20,6 +21,18 @@ _SYNONYMS = {
     "polyethylene": "polyetylen", "polypropylene": "polypropylen",
     "polyurethane": "polyurethan", "cotton": "bông",
 }
+
+
+def _read_jsonl(path) -> list[dict]:
+    """Đọc JSONL; fallback bản .gz (serverless chỉ bundle file nén cho nhẹ)."""
+    if path.exists():
+        with open(path, encoding="utf-8") as f:
+            return [json.loads(line) for line in f if line.strip()]
+    gz = path.with_suffix(path.suffix + ".gz")
+    if gz.exists():
+        with gzip.open(gz, "rt", encoding="utf-8") as f:
+            return [json.loads(line) for line in f if line.strip()]
+    return []
 
 
 def _tokenize(text: str) -> list[str]:
@@ -75,23 +88,13 @@ class Store:
 
     def __init__(self):
         # Records theo mã HS (bao gồm mọi level) + map tra cứu nhanh
-        self.records: list[dict] = []
-        hs_path = config.DATA_CLEAN / "hs_codes.jsonl"
-        if hs_path.exists():
-            with open(hs_path, encoding="utf-8") as f:
-                for line in f:
-                    self.records.append(json.loads(line))
+        self.records: list[dict] = _read_jsonl(config.DATA_CLEAN / "hs_codes.jsonl")
         self.by_code: dict[str, dict] = {}
         for r in self.records:
             self.by_code.setdefault(r["hs_code"], r)
 
         # Notes chương/phần
-        self.notes: list[dict] = []
-        notes_path = config.DATA_CLEAN / "hs_notes.jsonl"
-        if notes_path.exists():
-            with open(notes_path, encoding="utf-8") as f:
-                for line in f:
-                    self.notes.append(json.loads(line))
+        self.notes: list[dict] = _read_jsonl(config.DATA_CLEAN / "hs_notes.jsonl")
         self.chapter_notes = {n["chapter_code"]: n for n in self.notes
                               if n["note_for"] == "chapter" and n.get("chapter_code")}
         self.section_notes = {n["section_code"]: n for n in self.notes
@@ -112,12 +115,7 @@ class Store:
                 self.embeddings = np.load(emb_path)
 
         # ---- Legal corpus (data/clean/legal_chunks.jsonl) ----
-        self.legal_chunks: list[dict] = []
-        legal_path = config.DATA_CLEAN / "legal_chunks.jsonl"
-        if legal_path.exists():
-            with open(legal_path, encoding="utf-8") as f:
-                for line in f:
-                    self.legal_chunks.append(json.loads(line))
+        self.legal_chunks: list[dict] = _read_jsonl(config.DATA_CLEAN / "legal_chunks.jsonl")
         self.legal_bm25 = BM25([_tokenize(self.legal_text(c)) for c in self.legal_chunks]) \
             if self.legal_chunks else None
         self.legal_embeddings = None

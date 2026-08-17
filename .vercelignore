@@ -2,5 +2,6 @@
 data/BieuthueXNK/
 data/Law/
 data/clean/hs_codes.csv
+data/clean/hs_codes.jsonl
 docs/
 scripts/
