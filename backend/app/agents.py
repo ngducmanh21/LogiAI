@@ -18,7 +18,9 @@ Phân tích query của người dùng và trả JSON:
  "reason": "ngắn gọn"
 }
 - "hs_lookup": query là mã HS trực tiếp.
-- "invalid": query không liên quan hàng hóa xuất nhập khẩu.
+- "product_search": query nêu tên hoặc mô tả BẤT KỲ hàng hóa/vật phẩm vật lý nào — kể cả tên ngắn gọn như động vật, thực vật, thực phẩm, nguyên liệu, máy móc (vd: "con cua", "gạo", "tôm hùm", "sắt thép"). Mọi vật phẩm hữu hình đều có thể có mã HS.
+- "invalid": CHỈ khi query rõ ràng không phải hàng hóa: chào hỏi, câu hỏi kiến thức chung, dịch vụ, khái niệm trừu tượng, nội dung vô nghĩa.
+- Khi nghi ngờ, ưu tiên "product_search" thay vì "invalid".
 - Giữ nguyên thuật ngữ chuyên ngành; dịch tên tiếng Anh sang tiếng Việt kèm nguyên gốc."""
 
 
